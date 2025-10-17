@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 
 :root {
-    /* --- 색상 팔레트 변경 --- */
+    /* --- 색상 팔레트 --- */
     --primary-color: #FF7F50; /* 생기 있는 코랄 (Coral) - 포인트/강조 */
     --secondary-color: #FFFFFF; /* 흰색 (White) */
     --background-color: #F4F6F8; /* 부드러운 회색 배경 */
@@ -37,17 +37,17 @@ header {
 }
 
 header h1 {
-    color: var(--text-color); /* 제목 색상 변경 */
+    color: var(--text-color);
     margin-bottom: 10px;
-    font-size: 2.5rem; /* 제목 폰트 크기 조정 */
+    font-size: 2.5rem;
 }
 
 header p {
-    color: #546E7A; /* 부제목 색상 */
+    color: #546E7A;
     font-size: 1.1rem;
 }
 
-#record-form {
+#record-form, .stats-section, .records-list-container {
     background-color: var(--card-background);
     padding: 30px;
     border-radius: 12px;
@@ -56,14 +56,14 @@ header p {
 }
 
 .form-group {
-    margin-bottom: 25px; /* 그룹 간 간격 조정 */
+    margin-bottom: 25px;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
     font-weight: 700;
-    font-size: 1.1rem; /* 라벨 폰트 크기 조정 */
+    font-size: 1.1rem;
 }
 
 input[type="date"], select, textarea, input[type="text"] {
@@ -73,7 +73,7 @@ input[type="date"], select, textarea, input[type="text"] {
     border-radius: 8px;
     font-size: 1rem;
     font-family: 'Noto Sans KR', sans-serif;
-    background-color: #F9FAFB; /* 입력 필드 배경색 */
+    background-color: #F9FAFB;
     color: var(--text-color);
     transition: border-color 0.3s ease;
 }
@@ -83,12 +83,11 @@ input:focus, select:focus, textarea:focus {
     border-color: var(--primary-color);
 }
 
-
 textarea {
     resize: vertical;
 }
 
-.choice-selector { /* 기존 mood-selector 클래스명 변경 */
+.choice-selector {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -105,7 +104,7 @@ textarea {
     cursor: pointer;
     transition: all 0.3s ease;
     background-color: var(--secondary-color);
-    font-weight: normal; /* 평소엔 보통 굵기 */
+    font-weight: normal;
 }
 
 .choice-selector input[type="radio"]:checked + label, .choice-selector input[type="checkbox"]:checked + label {
@@ -129,7 +128,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #E56A40; /* 호버 시 약간 어둡게 */
+    background-color: #E56A40;
     transform: translateY(-2px);
 }
 
@@ -139,11 +138,7 @@ button[type="submit"]:hover {
 }
 
 .stats-section {
-    background-color: var(--card-background);
     padding: 20px 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow-color);
-    margin-bottom: 40px;
     text-align: center;
 }
 
@@ -170,7 +165,7 @@ button[type="submit"]:hover {
 
 #export-excel {
     padding: 8px 15px;
-    background-color: #263238; /* 엑셀 버튼 색상 변경 */
+    background-color: #263238;
     color: var(--secondary-color);
     border: none;
     border-radius: 8px;
@@ -185,15 +180,12 @@ button[type="submit"]:hover {
 }
 
 .records-list-container {
-    background-color: var(--card-background);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow-color);
     overflow: hidden;
+    padding: 0;
 }
 
 .records-header, .record-row {
     display: grid;
-    /* --- 기록 목록 그리드 컬럼 변경 --- */
     grid-template-columns: 100px 120px 1fr 120px 120px; 
     gap: 15px;
     padding: 15px 20px;
@@ -216,13 +208,12 @@ button[type="submit"]:hover {
     background-color: #F9FAFB;
 }
 
-/* --- 새로운 레코드 스타일 --- */
 .record-expenditure {
     font-weight: 700;
     color: var(--primary-color);
 }
 
-.record-content, .record-reason {
+.record-reason, .record-style {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -243,7 +234,56 @@ footer {
     color: #78909C;
 }
 
-/* 반응형 디자인은 기존 코드 유지 */
+/* ====================================================== */
+/* Responsive Design                     */
+/* ====================================================== */
 @media (max-width: 768px) {
-    /* ... (기존과 동일) ... */
+    .records-header {
+        display: none; /* 모바일에서는 헤더를 숨깁니다. */
+    }
+
+    .records-list-container {
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+    .record-row {
+        grid-template-columns: 1fr; /* 세로로 한 줄씩 표시되도록 변경 */
+        gap: 10px;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
+        background-color: var(--card-background);
+        padding: 20px;
+    }
+
+    /* 각 항목 앞에 라벨을 붙여줍니다. */
+    .record-row > div::before {
+        font-weight: 700;
+        margin-right: 10px;
+        color: var(--primary-color);
+        display: inline-block;
+        width: 90px;
+    }
+    
+    /* Fitter Meter 프로젝트에 맞는 라벨로 수정 */
+    .record-date::before { content: '날짜:'; }
+    .record-expenditure::before { content: '지출 금액:'; }
+    .record-reason::before { content: '구매 이유:'; }
+    .record-factor::before { content: '고려 요소:'; }
+    .record-style::before { content: '선호 스타일:'; }
+
+
+    /* 긴 텍스트가 잘리지 않고 줄바꿈되도록 설정 */
+    .record-reason, .record-style {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: initial;
+    }
+
+    /* 모든 텍스트를 왼쪽 정렬로 통일 */
+    .record-row > div {
+        text-align: left;
+    }
 }
