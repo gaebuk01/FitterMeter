@@ -14,6 +14,7 @@
         </header>
         <main>
             <form id="record-form">
+
                 <div class="form-group">
                     <label>1. 한 달 평균 패션 관련 지출 금액은 얼마인가요?</label>
                     <div class="choice-selector">
@@ -43,9 +44,12 @@
                         <label for="factor-4">트렌드</label>
                         <input type="radio" id="factor-5" name="factor" value="나와의 조화">
                         <label for="factor-5">나와의 조화</label>
+                        <input type="radio" id="factor-6" name="factor" value="기타">
+                        <label for="factor-6">기타</label>
                     </div>
+                    <input type="text" id="factor-other-text" name="factor-other" class="other-input" placeholder="고려하는 다른 요소를 직접 입력해주세요.">
                 </div>
-
+                
                 <div class="form-group">
                     <label>3. 평소 선호하는 패션 스타일을 선택해주세요. (복수 선택 가능)</label>
                     <div class="choice-selector">
@@ -61,9 +65,10 @@
                         <label for="style-5">클래식</label>
                         <input type="checkbox" id="style-6" name="style" value="페미닌">
                         <label for="style-6">페미닌</label>
-                         <input type="checkbox" id="style-7" name="style" value="기타">
+                        <input type="checkbox" id="style-7" name="style" value="기타">
                         <label for="style-7">기타</label>
                     </div>
+                    <input type="text" id="style-other-text" name="style-other" class="other-input" placeholder="선호하는 다른 스타일을 직접 입력해주세요.">
                 </div>
 
                 <div class="form-group">
@@ -77,9 +82,12 @@
                         <label for="channel-3">브랜드 공식몰</label>
                         <input type="radio" id="channel-4" name="channel" value="오프라인 매장">
                         <label for="channel-4">오프라인 매장</label>
-                         <input type="radio" id="channel-5" name="channel" value="중고거래">
+                        <input type="radio" id="channel-5" name="channel" value="중고거래">
                         <label for="channel-5">중고거래</label>
+                        <input type="radio" id="channel-6" name="channel" value="기타">
+                        <label for="channel-6">기타</label>
                     </div>
+                    <input type="text" id="channel-other-text" name="channel-other" class="other-input" placeholder="주로 이용하는 다른 채널을 직접 입력해주세요.">
                 </div>
 
                 <div class="form-group">
@@ -93,7 +101,10 @@
                         <label for="tendency-3">나를 표현하기 위해 소비한다</label>
                         <input type="radio" id="tendency-4" name="tendency" value="합리적 소비를 지향한다">
                         <label for="tendency-4">합리적 소비를 지향한다</label>
+                        <input type="radio" id="tendency-5" name="tendency" value="기타">
+                        <label for="tendency-5">기타</label>
                     </div>
+                    <input type="text" id="tendency-other-text" name="tendency-other" class="other-input" placeholder="나만의 소비 성향이나 가치관을 입력해주세요.">
                 </div>
 
                 <div class="form-group">
@@ -106,7 +117,7 @@
                     <textarea id="expectation" name="expectation" rows="3" placeholder="예: 내 소비 성향을 객관적으로 보고 싶다, 예산 관리에 참고하고 싶다 등" required></textarea>
                 </div>
 
-                <div class="form-group">
+                 <div class="form-group">
                     <label for="date">기록 날짜</label>
                     <input type="date" id="date" name="date" required>
                 </div>
@@ -117,12 +128,13 @@
             <section class="stats-section">
                 <h3>나의 소비 패턴 통계</h3>
                 <div class="chart-container">
-                    <canvas id="data-chart"></canvas> </div>
+                    <canvas id="data-chart"></canvas>
+                </div>
             </section>
 
             <section class="records-section">
                 <div class="section-header">
-                     <h2>나의 소비 기록</h2>
+                    <h2>나의 소비 기록</h2>
                     <button id="export-excel">엑셀로 내보내기</button>
                 </div>
                 <div class="records-list-container">
