@@ -123,7 +123,12 @@ button[type="submit"]:hover { background-color: #D85594; transform: translateY(-
 
 
 .charts-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
-.chart-container { width: 100%; position: relative; min-height: 250px; }
+.chart-container { 
+  width: 100%; 
+  position: relative; 
+  min-height: 250px; 
+  min-width: 0; /* ✨ [수정] 모바일에서 차트가 넘치지 않도록 이 줄을 추가합니다. */
+}
 .chart-container.full-width { grid-column: 1 / -1; max-height: 400px; max-width: 90%; margin: 20px auto 0; }
 
 .records-list-container { overflow: hidden; padding: 0; }
