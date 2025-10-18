@@ -1,21 +1,24 @@
 // script.js
 document.addEventListener('DOMContentLoaded', () => {
-    // !!! 중요: README.md 파일을 읽고, 배포된 자신의 Google Apps Script 웹 앱 URL로 변경하세요.
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz1rYuVij3Jtm4Kq0oBlasopUECeyW6XJegJ7GzpYjIHCguLXbfV9hAu4fmvlya1RfD3g/exec'; // 이 URL은 그대로 사용하시면 됩니다.
+    // !!! 중요: 이 URL은 사용자 본인의 것이므로 그대로 사용하세요.
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz1rYuVij3Jtm4Kq0oBlasopUECeyW6XJegJ7GzpYjIHCguLXbfV9hAu4fmvlya1RfD3g/exec';
 
     const recordForm = document.getElementById('record-form');
     const recordsContainer = document.getElementById('records-container');
     const dateInput = document.getElementById('date');
     const exportButton = document.getElementById('export-excel');
-    // --- 차트 캔버스 ID 변경 ---
-    const dataChartCanvas = document.getElementById('data-chart'); 
-    let recordsCache = []; // 데이터 캐싱
-    let dataChart; // 차트 변수명 변경
+    
+    // 차트 캔버스 요소 가져오기
+    const expenditureChartCanvas = document.getElementById('expenditure-chart');
+    const factorChartCanvas = document.getElementById('factor-chart');
+    const styleChartCanvas = document.getElementById('style-chart');
+    const tendencyChartCanvas = document.getElementById('tendency-chart');
+    
+    let recordsCache = [];
+    let expenditureChart, factorChart, styleChart, tendencyChart; // 차트 인스턴스 변수
 
-    // 페이지 로드 시 오늘 날짜로 기본 설정
     dateInput.value = new Date().toISOString().split('T')[0];
 
-    // 데이터 로드 및 화면 업데이트
     const loadRecords = async () => {
         try {
             recordsContainer.innerHTML = '<p>데이터를 불러오는 중...</p>';
@@ -32,8 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             recordsContainer.innerHTML = ''; 
             recordsCache.forEach(addRecordToDOM);
-            // --- 새로운 차트 렌더링 함수 호출 ---
+
+            // 모든 차트 렌더링 함수 호출
             renderExpenditureChart();
+            renderFactorChart();
+            renderStyleChart();
+            renderTendencyChart();
 
         } catch (error) {
             console.error('Error loading records:', error);
@@ -41,12 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // DOM에 기록 목록 행 추가 (완전히 새로운 구조)
     const addRecordToDOM = (record) => {
         const row = document.createElement('div');
         row.classList.add('record-row');
-
-        // --- 새로운 데이터 구조에 맞춰 innerHTML 변경 ---
         row.innerHTML = `
             <div class="record-date">${new Date(record.Date).toLocaleDateString()}</div>
             <div class="record-expenditure">${record.Expenditure || '-'}</div>
@@ -57,44 +61,124 @@ document.addEventListener('DOMContentLoaded', () => {
         recordsContainer.appendChild(row);
     };
 
-    // 지출 통계 차트 렌더링 (기존 renderMoodChart 대체)
+    // 지출 통계 차트 (원형)
     const renderExpenditureChart = () => {
-        // --- 'Expenditure' 필드를 기준으로 데이터 집계 ---
-        const expenditureCounts = recordsCache.reduce((acc, record) => {
-            const expenditure = record.Expenditure || '미분류';
-            acc[expenditure] = (acc[expenditure] || 0) + 1;
+        const dataCounts = recordsCache.reduce((acc, record) => {
+            const item = record.Expenditure || '미분류';
+            acc[item] = (acc[item] || 0) + 1;
             return acc;
         }, {});
 
-        const chartData = {
-            labels: Object.keys(expenditureCounts),
-            datasets: [{
-                label: '지출 구간별 횟수',
-                data: Object.values(expenditureCounts),
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                hoverOffset: 4
-            }]
-        };
-
-        if (dataChart) {
-            dataChart.destroy(); // 기존 차트 파괴
-        }
-
-        dataChart = new Chart(dataChartCanvas, {
-            type: 'pie', // 원형 차트
-            data: chartData,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'top' },
-                    title: {
-                        display: true,
-                        text: '월 평균 지출 금액 분포' // 차트 제목 변경
-                    }
-                }
-            }
+        if (expenditureChart) expenditureChart.destroy();
+        expenditureChart = new Chart(expenditureChartCanvas, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(dataCounts),
+                datasets: [{ data: Object.values(dataCounts), backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'] }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '월 평균 지출 금액 분포' }}}
         });
     };
+    
+    // --- ✨ 2. 새로운 차트 렌더링 함수들 추가 ---
+
+    // 고려 요소 차트 (원형)
+    const renderFactorChart = () => {
+        const dataCounts = recordsCache.reduce((acc, record) => {
+            const item = record.Factor || '미분류';
+            acc[item] = (acc[item] || 0) + 1;
+            return acc;
+        }, {});
+
+        if (factorChart) factorChart.destroy();
+        factorChart = new Chart(factorChartCanvas, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(dataCounts),
+                datasets: [{ data: Object.values(dataCounts), backgroundColor: ['#FF9F40', '#4BC0C0', '#FFCD56', '#C9CBCF', '#9966FF'] }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '구매 시 고려 요소' }}}
+        });
+    };
+
+    // 선호 스타일 차트 (막대)
+    const renderStyleChart = () => {
+        const dataCounts = recordsCache.reduce((acc, record) => {
+            if (record.Style) {
+                const styles = record.Style.split(', '); // 복수 선택된 스타일 분리
+                styles.forEach(item => {
+                    acc[item] = (acc[item] || 0) + 1;
+                });
+            }
+            return acc;
+        }, {});
+
+        if (styleChart) styleChart.destroy();
+        styleChart = new Chart(styleChartCanvas, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(dataCounts),
+                datasets: [{ label: '선택 횟수', data: Object.values(dataCounts), backgroundColor: '#36A2EB' }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false }, title: { display: true, text: '선호 패션 스타일' }}}
+        });
+    };
+
+    // 소비 성향 차트 (원형)
+    const renderTendencyChart = () => {
+        const dataCounts = recordsCache.reduce((acc, record) => {
+            const item = record.Tendency || '미분류';
+            acc[item] = (acc[item] || 0) + 1;
+            return acc;
+        }, {});
+
+        if (tendencyChart) tendencyChart.destroy();
+        tendencyChart = new Chart(tendencyChartCanvas, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(dataCounts),
+                datasets: [{ data: Object.values(dataCounts), backgroundColor: ['#9966FF', '#FF6384', '#FF9F40', '#36A2EB'] }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '패션 소비 성향' }}}
+        });
+    };
+
+    // '기타' 옵션 기능 함수
+    function setupOtherOptionListeners() {
+        const questionsWithOptions = [ { name: 'factor', type: 'radio' }, { name: 'style', type: 'checkbox' }, { name: 'channel', type: 'radio' }, { name: 'tendency', type: 'radio' } ];
+        questionsWithOptions.forEach(q => {
+            const inputs = document.querySelectorAll(`input[name="${q.name}"]`);
+            const otherTextInput = document.getElementById(`${q.name}-other-text`);
+            inputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    let otherIsSelected = (q.type === 'radio') ? (document.querySelector(`input[name="${q.name}"]:checked`)?.value === '기타') : (document.querySelector(`input[name="${q.name}"][value="기타"]`)?.checked);
+                    otherTextInput.style.display = otherIsSelected ? 'block' : 'none';
+                    if (!otherIsSelected) otherTextInput.value = '';
+                });
+            });
+        });
+    }
+
+    // --- ✨ 2. 스타일 2개 선택 제한 함수 ---
+    function limitStyleChoices() {
+        const styleCheckboxes = document.querySelectorAll('input[name="style"]');
+        styleCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const checkedCount = document.querySelectorAll('input[name="style"]:checked').length;
+                if (checkedCount >= 2) {
+                    styleCheckboxes.forEach(cb => {
+                        if (!cb.checked) {
+                            cb.disabled = true;
+                        }
+                    });
+                } else {
+                    styleCheckboxes.forEach(cb => {
+                        cb.disabled = false;
+                    });
+                }
+            });
+        });
+    }
 
     // 폼 제출 이벤트 처리
     recordForm.addEventListener('submit', async (e) => {
@@ -102,35 +186,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitButton = e.target.querySelector('button[type="submit"]');
         submitButton.disabled = true;
         submitButton.textContent = '저장 중...';
-
         const formData = new FormData(recordForm);
-        // --- 새로운 폼 데이터에 맞춰 전송할 데이터 객체 생성 ---
+        let factorValue = formData.get('factor') === '기타' ? formData.get('factor-other') : formData.get('factor');
+        const styleValues = formData.getAll('style').filter(val => val !== '기타');
+        const styleOtherText = formData.get('style-other').trim();
+        if (styleOtherText) styleValues.push(styleOtherText);
+        let channelValue = formData.get('channel') === '기타' ? formData.get('channel-other') : formData.get('channel');
+        let tendencyValue = formData.get('tendency') === '기타' ? formData.get('tendency-other') : formData.get('tendency');
+
         const data = {
             date: formData.get('date'),
             expenditure: formData.get('expenditure'),
-            factor: formData.get('factor'),
-            // 복수 선택 가능한 'style'은 getAll로 배열을 받아 쉼표로 구분된 문자열로 변환
-            style: formData.getAll('style').join(', '), 
-            channel: formData.get('channel'),
-            tendency: formData.get('tendency'),
+            factor: factorValue,
+            style: styleValues.join(', '),
+            channel: channelValue,
+            tendency: tendencyValue,
             reason: formData.get('reason'),
             expectation: formData.get('expectation')
         };
-
         try {
-            await fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                cache: 'no-cache',
-                redirect: 'follow',
-                body: JSON.stringify(data)
-            });
-
+            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', cache: 'no-cache', redirect: 'follow', body: JSON.stringify(data) });
             alert('성공적으로 기록되었습니다!');
             recordForm.reset();
             dateInput.value = new Date().toISOString().split('T')[0];
-            loadRecords(); // 데이터 다시 불러오기
-
+            document.querySelectorAll('.other-input').forEach(input => input.style.display = 'none');
+            document.querySelectorAll('input[name="style"]').forEach(cb => cb.disabled = false);
+            loadRecords();
         } catch (error) {
             console.error('Error submitting record:', error);
             alert('기록 저장에 실패했습니다. 인터넷 연결을 확인하세요.');
@@ -140,21 +221,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 엑셀 내보내기 이벤트 처리
     exportButton.addEventListener('click', () => {
         if (recordsCache.length === 0) {
             alert('내보낼 데이터가 없습니다.');
             return;
         }
-
         const worksheet = XLSX.utils.json_to_sheet(recordsCache);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "패션 소비 기록");
-
-        // --- 엑셀 파일명 변경 ---
         XLSX.writeFile(workbook, "fitter_meter_records.xlsx");
     });
-
-    // 초기 데이터 로드
+    
+    // 페이지 로드 시 기능 활성화
+    setupOtherOptionListeners();
+    limitStyleChoices();
     loadRecords();
 });

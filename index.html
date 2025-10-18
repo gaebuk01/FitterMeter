@@ -51,7 +51,7 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>3. 평소 선호하는 패션 스타일을 선택해주세요. (복수 선택 가능)</label>
+                    <label>3. 평소 선호하는 패션 스타일을 선택해주세요. (최대 2개)</label>
                     <div class="choice-selector">
                         <input type="checkbox" id="style-1" name="style" value="미니멀">
                         <label for="style-1">미니멀</label>
@@ -127,8 +127,19 @@
 
             <section class="stats-section">
                 <h3>나의 소비 패턴 통계</h3>
-                <div class="chart-container">
-                    <canvas id="data-chart"></canvas>
+                <div class="charts-grid-container">
+                    <div class="chart-container">
+                        <canvas id="expenditure-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="factor-chart"></canvas>
+                    </div>
+                    <div class="chart-container full-width">
+                        <canvas id="style-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="tendency-chart"></canvas>
+                    </div>
                 </div>
             </section>
 

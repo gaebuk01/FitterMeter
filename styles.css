@@ -2,14 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 
 :root {
-    /* --- 색상 팔레트 --- */
-    --primary-color: #FF7F50; /* 생기 있는 코랄 (Coral) - 포인트/강조 */
-    --secondary-color: #FFFFFF; /* 흰색 (White) */
-    --background-color: #F4F6F8; /* 부드러운 회색 배경 */
-    --card-background: #FFFFFF; /* 카드/폼 배경 */
-    --text-color: #263238; /* 어두운 네이비 계열 텍스트 */
-    --border-color: #E0E0E0; /* 연한 회색 경계선 */
-    --shadow-color: rgba(90, 100, 120, 0.1); /* 부드러운 그림자 */
+    --primary-color: #FF69B4; /* HotPink */
+    --secondary-color: #1E90FF; /* DodgerBlue */
+    --button-blue: #007BFF;
+    
+    --card-background: rgba(240, 248, 255, 0.9);
+    --text-color: #333;
+    --border-color: #EAEAEA;
+    --shadow-color: rgba(90, 100, 120, 0.1);
 }
 
 * {
@@ -20,9 +20,28 @@
 
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background-size: 200% 200%;
+    animation: gradientAnimation 15s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .container {
@@ -34,34 +53,54 @@ body {
 header {
     text-align: center;
     margin-bottom: 40px;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    animation: slideUp 0.6s ease-out forwards;
 }
 
 header h1 {
-    color: var(--text-color);
     margin-bottom: 10px;
-    font-size: 2.5rem;
+    font-size: 3.2rem; 
 }
 
 header p {
-    color: #546E7A;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    opacity: 0.9;
 }
 
-#record-form, .stats-section, .records-list-container {
+#record-form, .stats-section, .records-section {
     background-color: var(--card-background);
+    backdrop-filter: blur(10px);
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow-color);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 var(--shadow-color);
     margin-bottom: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    opacity: 0;
+    animation: slideUp 0.7s ease-out forwards;
+}
+
+.stats-section {
+    animation-delay: 0.1s;
+}
+.records-section {
+    animation-delay: 0.2s;
 }
 
 .form-group {
-    margin-bottom: 25px;
+    margin-bottom: 40px; 
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#record-form .form-group:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 15px;
     font-weight: 700;
     font-size: 1.1rem;
 }
@@ -73,14 +112,15 @@ input[type="date"], select, textarea, input[type="text"] {
     border-radius: 8px;
     font-size: 1rem;
     font-family: 'Noto Sans KR', sans-serif;
-    background-color: #F9FAFB;
+    background-color: #FDFDFD;
     color: var(--text-color);
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
 }
 
 textarea {
@@ -90,7 +130,7 @@ textarea {
 .choice-selector {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 15px;
 }
 
 .choice-selector input[type="radio"], .choice-selector input[type="checkbox"] {
@@ -98,27 +138,35 @@ textarea {
 }
 
 .choice-selector label {
-    padding: 10px 15px;
+    padding: 12px 20px;
     border: 1px solid var(--border-color);
     border-radius: 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: var(--secondary-color);
-    font-weight: normal;
+    background-color: #FFFFFF;
+    transition: all 0.2s ease-in-out;
 }
 
-.choice-selector input[type="radio"]:checked + label, .choice-selector input[type="checkbox"]:checked + label {
+.choice-selector label:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-color: var(--primary-color);
+}
+
+
+.choice-selector input[type="radio"]:checked + label, 
+.choice-selector input[type="checkbox"]:checked + label {
     background-color: var(--primary-color);
-    color: var(--secondary-color);
+    color: #FFFFFF;
     border-color: var(--primary-color);
     font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 button[type="submit"] {
     width: 100%;
     padding: 15px;
     background-color: var(--primary-color);
-    color: var(--secondary-color);
+    color: #FFFFFF;
     border: none;
     border-radius: 8px;
     font-size: 1.1rem;
@@ -128,25 +176,55 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #E56A40;
+    background-color: #D85594;
     transform: translateY(-2px);
 }
 
+#export-excel {
+    padding: 8px 15px;
+    background-color: var(--button-blue);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#export-excel:hover {
+    background-color: #0056b3;
+}
+
+/* --- ✨ 요청사항 반영: 섹션 제목 스타일 수정 --- */
+.stats-section h3, .records-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    display: inline-block; /* 배경이 글자 폭에 맞게 적용되도록 설정 */
+    
+    /* 1. 밑줄 제거 */
+    border-bottom: none; 
+
+    /* 2. 연한 핑크 배경 추가 */
+    background-color: #FFECF2; /* 매우 연한 핑크 */
+    padding: 5px 15px; /* 배경과 글자 사이의 여백 */
+    border-radius: 8px; /* 배경 모서리를 둥글게 */
+}
+
+.charts-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
 .chart-container {
-    max-width: 450px;
-    margin: 0 auto;
+    width: 100%;
 }
 
-.stats-section {
-    padding: 20px 30px;
-    text-align: center;
+.chart-container.full-width {
+    grid-column: 1 / -1;
 }
 
-.stats-section h3 {
-    margin-bottom: 15px;
-    color: var(--text-color);
-    font-size: 1.5rem;
-}
 
 .section-header {
     display: flex;
@@ -157,31 +235,16 @@ button[type="submit"]:hover {
     gap: 10px;
 }
 
-.records-section h2 {
-    margin-bottom: 0;
-    text-align: left;
-    font-size: 1.8rem;
-}
-
-#export-excel {
-    padding: 8px 15px;
-    background-color: #263238;
-    color: var(--secondary-color);
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#export-excel:hover {
-    background-color: #37474F;
-}
-
 .records-list-container {
     overflow: hidden;
     padding: 0;
+}
+
+.records-header {
+    font-weight: 700;
+    background-color: #F7F9FC;
+    border-bottom: 2px solid var(--button-blue);
+    border-radius: 16px 16px 0 0;
 }
 
 .records-header, .record-row {
@@ -193,19 +256,12 @@ button[type="submit"]:hover {
     border-bottom: 1px solid var(--border-color);
 }
 
-.records-header {
-    font-weight: 700;
-    background-color: #F1F3F5;
-    color: var(--text-color);
-    border-bottom: 2px solid var(--primary-color);
-}
-
 .record-row:last-child {
     border-bottom: none;
 }
 
 .record-row:hover {
-    background-color: #F9FAFB;
+    background-color: #F7F9FC;
 }
 
 .record-expenditure {
@@ -221,7 +277,7 @@ button[type="submit"]:hover {
 
 .record-date {
     font-size: 0.9rem;
-    color: #546E7A;
+    color: #777;
     text-align: center;
 }
 
@@ -229,36 +285,51 @@ footer {
     text-align: center;
     margin-top: 40px;
     padding-top: 20px;
-    border-top: 1px solid var(--border-color);
     font-size: 0.9rem;
-    color: #78909C;
+    color: #FFFFFF;
+    opacity: 0.8;
 }
 
-/* ====================================================== */
-/* Responsive Design                     */
-/* ====================================================== */
+.other-input {
+  display: none;
+  width: 100%;
+  margin-top: 10px;
+}
+
 @media (max-width: 768px) {
+    header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .charts-grid-container {
+        grid-template-columns: 1fr;
+    }
+
     .records-header {
-        display: none; /* 모바일에서는 헤더를 숨깁니다. */
+        display: none;
     }
 
     .records-list-container {
         background-color: transparent;
         box-shadow: none;
+        border: none;
     }
 
     .record-row {
-        grid-template-columns: 1fr; /* 세로로 한 줄씩 표시되도록 변경 */
+        grid-template-columns: 1fr;
         gap: 10px;
         margin-bottom: 15px;
         border-radius: 12px;
-        border: 1px solid var(--border-color);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         box-shadow: 0 4px 15px var(--shadow-color);
         background-color: var(--card-background);
         padding: 20px;
     }
 
-    /* 각 항목 앞에 라벨을 붙여줍니다. */
+    .record-row > div {
+        text-align: left;
+    }
+
     .record-row > div::before {
         font-weight: 700;
         margin-right: 10px;
@@ -267,23 +338,15 @@ footer {
         width: 90px;
     }
     
-    /* Fitter Meter 프로젝트에 맞는 라벨로 수정 */
     .record-date::before { content: '날짜:'; }
     .record-expenditure::before { content: '지출 금액:'; }
     .record-reason::before { content: '구매 이유:'; }
     .record-factor::before { content: '고려 요소:'; }
     .record-style::before { content: '선호 스타일:'; }
 
-
-    /* 긴 텍스트가 잘리지 않고 줄바꿈되도록 설정 */
     .record-reason, .record-style {
         white-space: normal;
         overflow: visible;
         text-overflow: initial;
-    }
-
-    /* 모든 텍스트를 왼쪽 정렬로 통일 */
-    .record-row > div {
-        text-align: left;
     }
 }
