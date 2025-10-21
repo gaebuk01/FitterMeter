@@ -16,41 +16,51 @@ document.addEventListener('DOMContentLoaded', () => {
     let expenditureChart, factorChart, styleChart, tendencyChart;
 
     const chartColors = {
-        mediumPink: '#FFB6C1', softPink: '#FFDAE9', rosePink: '#FFC0CB',
-        paleViolet: '#DB7093', lightOrchid: '#E6E6FA', mediumOrchid: '#DDA0DD',
+        mediumPink: '#FFB6C1',      // 연핑크
+        softPink: '#FFDAE9',        // 아주 연한 핑크 (막대그래프용)
+        lightBlue: '#ADD8E6',       // 연한 하늘색
+        paleViolet: '#DB7093',      // 진한 핑크/보라
+        lightOrchid: '#E6E6FA',      // 연보라
+        mediumOrchid: '#DDA0DD',    // 중간 보라
     };
-    const pieColors1 = [chartColors.mediumPink, chartColors.rosePink, chartColors.paleViolet, chartColors.lightOrchid, chartColors.mediumOrchid];
-    const pieColors2 = [chartColors.rosePink, chartColors.lightOrchid, chartColors.paleViolet, chartColors.mediumOrchid, chartColors.mediumPink];
-    const pieColors3 = [chartColors.lightOrchid, chartColors.mediumPink, chartColors.paleViolet, chartColors.rosePink];
 
+    // 원형 차트 1 (5개 색상)
+    const pieColors1 = [chartColors.mediumPink, chartColors.lightBlue, chartColors.paleViolet, chartColors.lightOrchid, chartColors.mediumOrchid];
+    
+    // 원형 차트 2 (5개 색상)
+    const pieColors2 = [chartColors.lightBlue, chartColors.lightOrchid, chartColors.paleViolet, chartColors.mediumOrchid, chartColors.mediumPink];
+    
+    // ✨ 여기가 수정되었습니다! (원형 차트 3)
+    // 4개 색상 -> 5개 색상으로 변경 (mediumOrchid 추가)
+    const pieColors3 = [chartColors.lightOrchid, chartColors.mediumPink, chartColors.paleViolet, chartColors.lightBlue, chartColors.mediumOrchid];
     // --- ✨ 6. 기본 날짜 설정 확인 ---
     dateInput.value = new Date().toISOString().split('T')[0];
 
     const loadRecords = async () => { try { recordsContainer.innerHTML = '<p>데이터를 불러오는 중...</p>'; const response = await fetch(WEB_APP_URL, { method: 'GET', redirect: 'follow' }); if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); recordsCache = await response.json(); if (!Array.isArray(recordsCache)) { console.error("Error data:", recordsCache); throw new Error('Apps Script Error.'); } recordsCache.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp)); recordsContainer.innerHTML = ''; recordsCache.forEach(addRecordToDOM); renderExpenditureChart(); renderFactorChart(); renderStyleChart(); renderTendencyChart(); } catch (error) { console.error('Error loading records:', error); recordsContainer.innerHTML = `<p style="color: red;">데이터 로딩 실패. 설정을 확인하세요.</p>`; } };
 
-    // --- ✨ 5. 테이블 내용 순서 변경 ---
+    // --- ✨ 2. JS 테이블 내용 수정 ---
     const addRecordToDOM = (record) => {
         const row = document.createElement('div');
         row.classList.add('record-row');
-        // 순서: Nickname, Style, Reason, Factor, Date
+        // 순서: Nickname, Channel, Reason, Expectation, Date
         row.innerHTML = `
             <div class="record-nickname">${record.Nickname || '-'}</div>
-            <div class="record-style" title="${record.Style || '-'}">${record.Style || '-'}</div>
+            <div class="record-channel" title="${record.Channel || '-'}">${record.Channel || '-'}</div>
             <div class="record-reason" title="${record.Reason || '-'}">${record.Reason || '-'}</div>
-            <div class="record-factor">${record.Factor || '-'}</div>
+            <div class="record-expectation" title="${record.Expectation || '-'}">${record.Expectation || '-'}</div>
             <div class="record-date">${new Date(record.Date).toLocaleDateString()}</div>
         `;
         recordsContainer.appendChild(row);
     };
 
     // 지출 통계 차트 (원형)
-    const renderExpenditureChart = () => { const dataCounts = recordsCache.reduce((acc, record) => { const item = record.Expenditure || '미분류'; acc[item] = (acc[item] || 0) + 1; return acc; }, {}); if (expenditureChart) expenditureChart.destroy(); expenditureChart = new Chart(expenditureChartCanvas, { type: 'pie', data: { labels: Object.keys(dataCounts), datasets: [{ data: Object.values(dataCounts), backgroundColor: pieColors1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, title: { display: true, text: '월 평균 지출 금액 분포' }}} }); };
+    const renderExpenditureChart = () => { const dataCounts = recordsCache.reduce((acc, record) => { const item = record.Expenditure || '미분류'; acc[item] = (acc[item] || 0) + 1; return acc; }, {}); if (expenditureChart) expenditureChart.destroy(); expenditureChart = new Chart(expenditureChartCanvas, { type: 'pie', data: { labels: Object.keys(dataCounts), datasets: [{ data: Object.values(dataCounts), backgroundColor: pieColors1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, title: { display: true, text: '월 평균 지출 금액 분포' ,position: 'bottom'}}} }); };
     // 고려 요소 차트 (원형)
-    const renderFactorChart = () => { const dataCounts = recordsCache.reduce((acc, record) => { const item = record.Factor || '미분류'; acc[item] = (acc[item] || 0) + 1; return acc; }, {}); if (factorChart) factorChart.destroy(); factorChart = new Chart(factorChartCanvas, { type: 'pie', data: { labels: Object.keys(dataCounts), datasets: [{ data: Object.values(dataCounts), backgroundColor: pieColors2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, title: { display: true, text: '구매 시 고려 요소' }}} }); };
+    const renderFactorChart = () => { const dataCounts = recordsCache.reduce((acc, record) => { const item = record.Factor || '미분류'; acc[item] = (acc[item] || 0) + 1; return acc; }, {}); if (factorChart) factorChart.destroy(); factorChart = new Chart(factorChartCanvas, { type: 'pie', data: { labels: Object.keys(dataCounts), datasets: [{ data: Object.values(dataCounts), backgroundColor: pieColors2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, title: { display: true, text: '구매 시 고려 요소' ,position: 'bottom'}}} }); };
     // 선호 스타일 차트 (막대)
-    const renderStyleChart = () => { const baseStyleLabels = ["미니멀", "스트릿", "꾸안꾸", "빈티지", "클래식", "페미닌"]; let finalStyleLabels = [...baseStyleLabels]; const recordedCounts = recordsCache.reduce((acc, record) => { if (record.Style) { const styles = record.Style.split(', '); styles.forEach(item => { acc[item] = (acc[item] || 0) + 1; if (!baseStyleLabels.includes(item) && item && !finalStyleLabels.includes('기타')) { finalStyleLabels.push('기타'); } }); } return acc; }, {}); const chartDataValues = finalStyleLabels.map(label => recordedCounts[label] || 0); if (styleChart) styleChart.destroy(); styleChart = new Chart(styleChartCanvas, { type: 'bar', data: { labels: finalStyleLabels, datasets: [{ label: '선택 횟수', data: chartDataValues, backgroundColor: chartColors.softPink }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: '선호 패션 스타일' }}, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } }); };
+    const renderStyleChart = () => { const baseStyleLabels = ["미니멀", "스트릿", "꾸안꾸", "빈티지", "클래식", "페미닌"]; let finalStyleLabels = [...baseStyleLabels]; const recordedCounts = recordsCache.reduce((acc, record) => { if (record.Style) { const styles = record.Style.split(', '); styles.forEach(item => { acc[item] = (acc[item] || 0) + 1; if (!baseStyleLabels.includes(item) && item && !finalStyleLabels.includes('기타')) { finalStyleLabels.push('기타'); } }); } return acc; }, {}); const chartDataValues = finalStyleLabels.map(label => recordedCounts[label] || 0); if (styleChart) styleChart.destroy(); styleChart = new Chart(styleChartCanvas, { type: 'bar', data: { labels: finalStyleLabels, datasets: [{ label: '선택 횟수', data: chartDataValues, backgroundColor: chartColors.softPink }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: '선호 패션 스타일' ,position: 'bottom'}}, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } }); };
     // 소비 성향 차트 (원형)
-    const renderTendencyChart = () => { const dataCounts = recordsCache.reduce((acc, record) => { const item = record.Tendency || '미분류'; acc[item] = (acc[item] || 0) + 1; return acc; }, {}); if (tendencyChart) tendencyChart.destroy(); tendencyChart = new Chart(tendencyChartCanvas, { type: 'pie', data: { labels: Object.keys(dataCounts), datasets: [{ data: Object.values(dataCounts), backgroundColor: pieColors3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, title: { display: true, text: '패션 소비 성향' }}} }); };
+    const renderTendencyChart = () => { const dataCounts = recordsCache.reduce((acc, record) => { const item = record.Tendency || '미분류'; acc[item] = (acc[item] || 0) + 1; return acc; }, {}); if (tendencyChart) tendencyChart.destroy(); tendencyChart = new Chart(tendencyChartCanvas, { type: 'pie', data: { labels: Object.keys(dataCounts), datasets: [{ data: Object.values(dataCounts), backgroundColor: pieColors3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, title: { display: true, text: '패션 소비 성향' ,position: 'bottom'}}} }); };
 
     // '기타' 옵션 기능 함수
     function setupOtherOptionListeners() { const questionsWithOptions = [ { name: 'factor', type: 'radio' }, { name: 'style', type: 'checkbox' }, { name: 'channel', type: 'radio' }, { name: 'tendency', type: 'radio' } ]; questionsWithOptions.forEach(q => { const inputs = document.querySelectorAll(`input[name="${q.name}"]`); const otherTextInput = document.getElementById(`${q.name}-other-text`); inputs.forEach(input => { input.addEventListener('change', () => { let otherIsSelected = (q.type === 'radio') ? (document.querySelector(`input[name="${q.name}"]:checked`)?.value === '기타') : (document.querySelector(`input[name="${q.name}"][value="기타"]`)?.checked); otherTextInput.style.display = otherIsSelected ? 'block' : 'none'; if (!otherIsSelected) otherTextInput.value = ''; }); }); }); }

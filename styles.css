@@ -1,5 +1,5 @@
 /* styles.css */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap'); /* 500, 600 굵기 추가 */
 
 :root {
   --primary-color: #FF69B4; /* HotPink */
@@ -13,7 +13,7 @@
   --text-color: #2c3e50;
   --border-color: #F0F0F0;
   --shadow-color: rgba(90, 90, 120, 0.08);
-  --text-color-grey: #757575;
+  --text-color-grey: #AAAAAA; 
 
   --background-pink-start: #FFE4EC;
   --background-pink-end: #FFB6C1;
@@ -32,15 +32,24 @@ body {
 .container { max-width: 1150px; margin: 0 auto; padding: 55px; }
 
 header {
-  text-align: center; margin-bottom: 30px; animation: slideUp 0.6s ease-out forwards;
+  text-align: center; margin-bottom: 65px; animation: slideUp 0.6s ease-out forwards;
   color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-header h1 { margin-bottom: 20px; font-size: 4.2rem; color: var(--primary-color); text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); }
-header p { font-size: 1.15rem; opacity: 0.9; margin-bottom: 50px; color: #FFFFFF; }
+header h1 { margin-bottom: 21px; font-size: 4.3rem; color: var(--primary-color); text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); }
+
+/* ✨ 3. 헤더 부제목(p) 수정: 글자 크기 + 굵기 */
+header p { 
+  font-size: 1.3rem; /* 1.15rem에서 크기 키움 */
+  font-weight: 600; /* 굵기 추가 (Semibold) */
+  opacity: 0.9; 
+  margin-bottom: 50px; 
+  color: var(--primary-color); 
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
 
 #record-form, .stats-section, .records-section {
   background-color: var(--card-background); backdrop-filter: blur(10px);
-  padding: 45px; border-radius: 16px; box-shadow: 0 8px 32px 0 var(--shadow-color);
+  padding: 50px; border-radius: 16px; box-shadow: 0 8px 32px 0 var(--shadow-color);
   margin-bottom: 40px; border: 1px solid rgba(255, 255, 255, 0.2);
   opacity: 0; animation: slideUp 0.7s ease-out forwards;
 }
@@ -49,7 +58,14 @@ header p { font-size: 1.15rem; opacity: 0.9; margin-bottom: 50px; color: #FFFFFF
 
 .form-group { margin-bottom: 30px; padding-bottom: 30px; border-bottom: none; }
 #record-form .form-group:last-of-type { border-bottom: none; padding-bottom: 0; }
-.form-group label { display: block; margin-bottom: 27px; font-weight: 400; font-size: 1.1rem; }
+
+/* ✨ 1. 질문(label) 굵기 수정: 700 -> 500(Medium) */
+.form-group label { 
+  display: block; 
+  margin-bottom: 27px; 
+  font-weight: 500; /* 700에서 Medium 굵기(500)로 변경 */
+  font-size: 1.15rem; 
+}
 
 input[type="date"], select, textarea, input[type="text"] {
   width: 100%; padding: 12px; border: 1.5px solid var(--border-color); border-radius: 8px;
@@ -64,13 +80,17 @@ textarea { resize: vertical; }
 .choice-selector label {
   padding: 12px 20px; border: 2px solid var(--border-color); border-radius: 20px;
   cursor: pointer; background-color: #FFFFFF; transition: all 0.2s ease-in-out;
-  font-weight: 400; color: var(--text-color-grey);
+  font-weight: 400; 
+  color: var(--text-color-grey); 
 }
 .choice-selector label:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-color: var(--primary-color); }
+
+/* ✨ 2. '선택된' 답변 굵기 수정: 700 -> 400(Regular) */
 .choice-selector input[type="radio"]:checked + label,
 .choice-selector input[type="checkbox"]:checked + label {
   background-color: var(--primary-color); color: #FFFFFF; border-color: var(--primary-color);
-  font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-weight: 400; /* 700에서 Regular 굵기(400)로 변경 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 button[type="submit"] {
@@ -92,9 +112,6 @@ button[type="submit"]:hover { background-color: #D85594; transform: translateY(-
 }
 /* 기록 섹션의 헤더 (제목만 남음) */
 .section-header-inside {
-    /* display: flex; 제거 */
-    /* justify-content: space-between; 제거 */
-    /* align-items: center; 제거 */
   margin-bottom: 20px; /* 제목과 테이블 사이 간격 유지 */
 }
 
@@ -118,8 +135,6 @@ button[type="submit"]:hover { background-color: #D85594; transform: translateY(-
     background-color: var(--primary-color);
     color: #FFFFFF;
 }
-/* 기존 #export-excel 스타일 제거 또는 주석 처리 */
-/* #export-excel { ... } */
 
 
 .charts-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
@@ -127,7 +142,7 @@ button[type="submit"]:hover { background-color: #D85594; transform: translateY(-
   width: 100%; 
   position: relative; 
   min-height: 250px; 
-  min-width: 0; /* ✨ [수정] 모바일에서 차트가 넘치지 않도록 이 줄을 추가합니다. */
+  min-width: 0; 
 }
 .chart-container.full-width { grid-column: 1 / -1; max-height: 400px; max-width: 90%; margin: 20px auto 0; }
 
@@ -137,11 +152,22 @@ button[type="submit"]:hover { background-color: #D85594; transform: translateY(-
   border-bottom: 2px solid var(--primary-color); border-radius: 16px 16px 0 0;
 }
 
-.records-header, .record-row { display: grid; grid-template-columns: 100px 1fr 1.5fr 1fr 100px;gap: 15px; padding: 15px 20px; align-items: center; border-bottom: 1px solid var(--border-color); }
+.records-header, .record-row { 
+    display: grid; 
+    grid-template-columns: 100px 1fr 1.5fr 1.5fr 100px;
+    gap: 15px; 
+    padding: 15px 20px; 
+    align-items: center; 
+    border-bottom: 1px solid var(--border-color); 
+}
 .record-row:last-child { border-bottom: none; }
 .record-row:hover { background-color: #F7F9FC; }
 .record-nickname { font-weight: 700; }
-.record-style, .record-reason, .record-factor { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.record-channel, .record-reason, .record-expectation {
+    white-space: normal; /* 줄바꿈 허용 */
+    line-height: 1.4;
+}
 .record-date { font-size: 0.9rem; color: #777; text-align: center; }
 
 footer { text-align: center; margin-top: 40px; padding-top: 20px; font-size: 0.9rem; color: #FFFFFF; opacity: 0.8; }
@@ -162,11 +188,16 @@ footer { text-align: center; margin-top: 40px; padding-top: 20px; font-size: 0.9
   .records-list-container { background-color: transparent; box-shadow: none; border: none; }
   .record-row { grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 4px 15px var(--shadow-color); background-color: var(--card-background); padding: 20px; }
   .record-row > div { text-align: left; }
+  
   .record-row > div::before { font-weight: 700; margin-right: 10px; color: var(--primary-color); display: inline-block; width: 90px; }
-  .record-nickname::before { content: '닉네임:'; } .record-style::before { content: '선호 스타일:'; } .record-reason::before { content: '구매 이유:'; } .record-factor::before { content: '고려 요소:'; } .record-date::before { content: '날짜:'; }
-  .record-reason, .record-style, .record-factor { white-space: normal; overflow: visible; text-overflow: initial; }
-    /* 모바일 제목 스타일 조정 */
-    .section-header-inside { margin-bottom: 15px; } /* 테이블과의 간격 살짝 줄임 */
-    /* 모바일 하단 버튼 스타일 */
-    .export-button-bottom { margin-bottom: 30px; font-size: 0.9rem;} /* 모바일 하단 여백 및 폰트 조정 */
+  .record-nickname::before { content: '닉네임:'; } 
+  .record-channel::before { content: '이용 채널:'; } 
+  .record-reason::before { content: '구매 이유:'; } 
+  .record-expectation::before { content: '기대하는 점:'; } 
+  .record-date::before { content: '날짜:'; }
+  
+  .record-channel, .record-reason, .record-expectation { white-space: normal; overflow: visible; text-overflow: initial; }
+  
+  .section-header-inside { margin-bottom: 15px; }
+  .export-button-bottom { margin-bottom: 30px; font-size: 0.9rem;}
 }
